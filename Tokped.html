@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marketplace Lengkap dengan Gambar Wishlist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+    .main-container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px 0 80px 0;
+      background: #f4f6f8;
+    }
+    .search-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 0 12px;
+    }
+    .search-bar input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      font-size: 1rem;
+      background: #fff;
+      outline: none;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 10px;
+      padding: 0 12px;
+    }
+    .product-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      position: relative;
+      font-size: 0.96rem;
+      min-height: 230px;
+      transition: box-shadow 0.2s;
+    }
+    .product-card:hover {
+      box-shadow: 0 4px 16px rgba(67,160,71,0.11);
+    }
+    .product-card img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      background: #eee;
+    }
+    .product-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 4px;
+      min-height: 38px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .product-price {
+      color: #388e3c;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 3px;
+    }
+    .product-info {
+      font-size: 0.89rem;
+      color: #757575;
+      margin-bottom: 3px;
+    }
+    .product-badge {
+      font-size: 0.85rem;
+      color: #ff9800;
+      background: #fffde7;
+      border-radius: 5px;
+      padding: 2px 7px;
+      margin-bottom: 2px;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .product-rating {
+      font-size: 0.88rem;
+      color: #fbc02d;
+      font-weight: 600;
+      margin-bottom: 1px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .select-item {
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .select-item input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: #43a047;
+    }
+    .select-item input[type="number"] {
+      width: 36px;
+      padding: 2px 5px;
+      border: 1px solid #a5d6a7;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      text-align: center;
+      color: #2e7d32;
+    }
+    .select-item input[type="number"]:disabled {
+      background: #e0e0e0;
+      color: #999;
+    }
+    .wishlist-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.3rem;
+      color: #ccc;
+      transition: color 0.3s;
+    }
+    .wishlist-btn.active {
+      color: #e91e63;
+    }
+    .wishlist-btn:hover {
+      color: #e91e63;
+    }
+    /* Form pemesanan */
+    .order-form-section {
+      background: #e8f5e9;
+      border-radius: 12px;
+      margin: 24px 12px 20px 12px;
+      padding: 18px 16px 12px 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+    }
+    .order-form-section h2 {
+      color: #2e7d32;
+      margin: 0 0 12px 0;
+      font-weight: 600;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+    .order-form-section label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #1b5e20;
+      font-size: 1rem;
+    }
+    .order-form-section textarea,
+    .order-form-section select {
+      width: 100%;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      border-radius: 7px;
+      border: 1.5px solid #a5d6a7;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      resize: vertical;
+    }
+    .order-form-section textarea:focus,
+    .order-form-section select:focus {
+      outline: none;
+      border-color: #388e3c;
+      box-shadow: 0 0 8px #81c784aa;
+    }
+    .order-form-section button {
+      background-color: #43a047;
+      color: white;
+      border: none;
+      padding: 12px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
+      transition: background-color 0.3s;
+      box-shadow: 0 5px 15px rgba(67,160,71,0.13);
+    }
+    .order-form-section button:hover {
+      background-color: #2e7d32;
+    }
+    /* Daftar pesanan (riwayat) */
+    .order-summary-section {
+      background: #f1f8e9;
+      border-radius: 12px;
+      margin: 20px 12px 20px 12px;
+      padding: 18px 16px 12px 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+      display: none;
+    }
+    .order-summary-section.active {
+      display: block;
+    }
+    .order-summary-section h2 {
+      color: #33691e;
+      margin: 0 0 14px 0;
+      font-weight: 600;
+      font-size: 1.18rem;
+      text-align: center;
+    }
+    .order-summary-section .order-item {
+      border: 1px solid #aed581;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      padding: 12px;
+      background: #e8f5e9;
+      word-wrap: break-word;
+    }
+    .order-summary-section .order-item h3 {
+      margin: 0 0 8px 0;
+      color: #2e7d32;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #a5d6a7;
+      padding-bottom: 4px;
+      word-wrap: break-word;
+    }
+    .order-summary-section table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      table-layout: fixed;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .order-summary-section th, .order-summary-section td {
+      border: 1px solid #c5e1a5;
+      padding: 8px 10px;
+      text-align: left;
+      color: #33691e;
+      vertical-align: middle;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+    }
+    .order-summary-section th {
+      background-color: #aed581;
+      font-weight: 600;
+    }
+    .order-summary-section tr:nth-child(even) {
+      background-color: #dcedc8;
+    }
+    .order-summary-section .summary-label {
+      font-weight: 600;
+      color: #388e3c;
+      margin-top: 8px;
+      font-size: 1.05rem;
+    }
+    .order-summary-section .summary-value {
+      font-weight: 700;
+      color: #2e7d32;
+      font-size: 1.1rem;
+    }
+    /* Wishlist section */
+    #wishlist-section {
+      display: none;
+      background: #f1f8e9;
+      border-radius: 12px;
+      margin: 20px 12px 20px 12px;
+      padding: 18px 16px 12px 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+      font-size: 1rem;
+    }
+    #wishlist-section h2 {
+      color: #33691e;
+      margin: 0 0 14px 0;
+      font-weight: 600;
+      font-size: 1.18rem;
+      text-align: center;
+    }
+    #wishlist-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 10px 0;
+      max-height: 360px;
+      overflow-y: auto;
+    }
+    #wishlist-list li {
+      background: #fff;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #wishlist-list li img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    #wishlist-list li span {
+      font-weight: 600;
+      color: #2e7d32;
+      flex-grow: 1;
+    }
+    #wishlist-list li .select-item {
+      gap: 6px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+    #wishlist-list li .select-item input[type="number"] {
+      width: 40px;
+      padding: 2px 5px;
+      font-size: 0.9rem;
+    }
+    #wishlist-list li button.remove-btn {
+      background: #e91e63;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s;
+      flex-shrink: 0;
+    }
+    #wishlist-list li button.remove-btn:hover {
+      background: #ad1457;
+    }
+    #wishlist-section button#wishlist-order-btn {
+      background-color: #43a047;
+      color: white;
+      border: none;
+      padding: 12px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s;
+      box-shadow: 0 5px 15px rgba(67,160,71,0.13);
+    }
+    #wishlist-section button#wishlist-order-btn:hover {
+      background-color: #2e7d32;
+    }
+    /* Bottom nav */
+    .bottom-bar {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      background: #fff;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 60px;
+      z-index: 99;
+    }
+    .bottom-bar .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #757575;
+      font-size: 0.92rem;
+      text-decoration: none;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+    .bottom-bar .nav-item.active,
+    .bottom-bar .nav-item:hover {
+      color: #43a047;
+    }
+    .bottom-bar .nav-item i {
+      font-size: 1.4em;
+      margin-bottom: 2px;
+    }
+    @media (max-width: 520px) {
+      .main-container { max-width: 100vw; }
+      .order-form-section, .order-summary-section, #wishlist-section { margin-left: 3px; margin-right: 3px; }
+      .order-summary-section table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container" id="main-content">
+    <!-- Search bar -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Cari produk..." oninput="filterProducts()" />
+    </div>
+    <!-- Produk grid 2 kolom 5 baris -->
+    <form id="product-form">
+      <div class="product-grid" id="product-grid"></div>
+    </form>
+    <!-- Form pemesanan -->
+    <div class="order-form-section" id="order-form-section">
+      <h2>Form Pemesanan</h2>
+      <label for="alamat">Alamat Pengiriman:</label>
+      <textarea id="alamat" rows="2" placeholder="Masukkan alamat lengkap" required></textarea>
+      <label for="payment-method">Metode Pembayaran:</label>
+      <select id="payment-method" required>
+        <option value="" disabled selected>Pilih Metode Pembayaran</option>
+        <option value="transfer">Transfer Bank</option>
+        <option value="cod">COD (Bayar di Tempat)</option>
+        <option value="ewallet">E-Wallet (OVO, GoPay, DANA)</option>
+      </select>
+      <button type="button" onclick="submitOrder()">Pesan Sekarang</button>
+    </div>
+  </div>
+  <!-- Wishlist Section -->
+  <div id="wishlist-section">
+    <h2>Wishlist Anda</h2>
+    <ul id="wishlist-list"></ul>
+    <button id="wishlist-order-btn">Pesan Sekarang dari Wishlist</button>
+    <div style="text-align:center; margin-top:10px;">
+      <button onclick="showHome()" style="padding:8px 16px; border:none; background:#43a047; color:#fff; border-radius:6px; cursor:pointer;">Tutup Wishlist</button>
+    </div>
+  </div>
+  <!-- Transaksi Section -->
+  <div class="order-summary-section" id="order-summary">
+    <h2>Daftar Pesanan Anda</h2>
+    <div id="orders-container"></div>
+  </div>
+  <!-- Bottom navigation bar -->
+  <div class="bottom-bar">
+    <a href="#" class="nav-item active" onclick="showHome(event)"><i class="fa fa-home"></i>Home</a>
+    <a href="#" class="nav-item" onclick="showWishlist(event)"><i class="fa fa-heart"></i>Wishlist</a>
+    <a href="#" class="nav-item" onclick="showOrders(event)"><i class="fa fa-shopping-bag"></i>Transaksi</a>
+  </div>
+  <script>
+    const products = [
+      { name: "Kaos Polos Pria Katun Combed", price: 50000, img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80", sold: 8, rating: 5.0, badge: "Bisa COD" },
+      { name: "Celana Jeans Slim Fit Pria", price: 120000, img: "images (11).jpeg", sold: 12, rating: 4.9, badge: "Bisa COD" },
+      { name: "Sepatu Sneakers Sporty", price: 250000, img: "sepatu.jpeg", sold: 21, rating: 4.8, badge: "Bisa COD" },
+      { name: "Jam Tangan Digital Waterproof", price: 180000, img: "jam2.jpeg", sold: 15, rating: 5.0, badge: "Bisa COD" },
+      { name: "Topi Baseball Polos", price: 35000, img: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80", sold: 5, rating: 4.7, badge: "Bisa COD" },
+      { name: "Tas Ransel Sekolah Remaja", price: 200000, img: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80", sold: 17, rating: 4.9, badge: "Gratis Ongkir" },
+      { name: "Kemeja Formal Pria Lengan Panjang", price: 90000, img: "https://images.unsplash.com/photo-1526178613658-3f1622045557?auto=format&fit=crop&w=400&q=80", sold: 9, rating: 5.0, badge: "Bisa COD" },
+      { name: "Power Bank 10000mAh Fast Charging", price: 150000, img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80", sold: 14, rating: 4.8, badge: "Bisa COD" },
+      { name: "Headset Bluetooth Wireless", price: 110000, img: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=400&q=80", sold: 10, rating: 4.7, badge: "Bisa COD" },
+      { name: "Dompet Kulit Pria Slim", price: 80000, img: "https://images.unsplash.com/photo-1465101178521-c1a9136a3fd8?auto=format&fit=crop&w=400&q=80", sold: 8, rating: 5.0, badge: "Bisa COD" }
+    ];
+
+    const grid = document.getElementById('product-grid');
+    const wishlistSection = document.getElementById('wishlist-section');
+    const wishlistList = document.getElementById('wishlist-list');
+    const orderSummary = document.getElementById('order-summary');
+    const ordersContainer = document.getElementById('orders-container');
+    const orderFormSection = document.getElementById('order-form-section');
+    const mainContent = document.getElementById('main-content');
+    const navItems = document.querySelectorAll('.bottom-bar .nav-item');
+    const wishlistOrderBtn = document.getElementById('wishlist-order-btn');
+
+    // Load wishlist dan orders dari localStorage
+    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+    function renderProducts(filteredProducts = products) {
+      grid.innerHTML = '';
+      filteredProducts.forEach((p, i) => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        const isWishlisted = wishlist.some(item => item.name === p.name);
+        card.innerHTML = `
+          <img src="${p.img}" alt="${p.name}">
+          <span class="product-badge">${p.badge}</span>
+          <div class="product-title">${p.name}</div>
+          <div class="product-price">Rp${p.price.toLocaleString('id-ID')}</div>
+          <div class="product-info">${p.sold} terjual</div>
+          <div class="product-rating"><i class="fa fa-star"></i>${p.rating} • ${p.sold + 10}+</div>
+          <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" aria-label="Wishlist ${p.name}" title="Wishlist" onclick="toggleWishlist('${p.name}', this)">
+            <i class="fa fa-heart"></i>
+          </button>
+          <div class="select-item">
+            <input type="checkbox" class="item-check" data-index="${i}" aria-label="Pilih ${p.name}" />
+            <input type="number" min="1" value="1" class="qty-input qty" data-index="${i}" disabled aria-label="Jumlah ${p.name}" />
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      attachCheckboxListeners();
+    }
+
+    function attachCheckboxListeners() {
+      document.querySelectorAll('.item-check').forEach(cb => {
+        cb.addEventListener('change', function() {
+          const idx = this.getAttribute('data-index');
+          document.querySelectorAll('.qty')[idx].disabled = !this.checked;
+        });
+      });
+    }
+
+    function toggleWishlist(name, btn) {
+      const index = wishlist.findIndex(item => item.name === name);
+      if (index > -1) {
+        wishlist.splice(index, 1);
+        btn.classList.remove('active');
+      } else {
+        const product = products.find(p => p.name === name);
+        if (product) {
+          wishlist.push(product);
+          btn.classList.add('active');
+        }
+      }
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      if (wishlistSection.style.display === 'block') {
+        renderWishlist();
+      }
+    }
+
+    function renderWishlist() {
+      wishlistList.innerHTML = '';
+      if (wishlist.length === 0) {
+        wishlistList.innerHTML = '<li>Wishlist Anda kosong.</li>';
+        wishlistOrderBtn.style.display = 'none';
+        return;
+      }
+      wishlistOrderBtn.style.display = 'block';
+      wishlist.forEach((item, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <img src="${item.img}" alt="${item.name}" loading="lazy" />
+          <span>${item.name}</span>
+          <div class="select-item">
+            <input type="checkbox" class="wishlist-check" data-index="${i}" aria-label="Pilih ${item.name}" />
+            <input type="number" min="1" value="1" class="wishlist-qty" data-index="${i}" disabled aria-label="Jumlah ${item.name}" />
+          </div>
+          <button class="remove-btn" onclick="removeFromWishlist('${item.name}')">Hapus</button>
+        `;
+        wishlistList.appendChild(li);
+      });
+      attachWishlistCheckboxListeners();
+    }
+
+    function attachWishlistCheckboxListeners() {
+      document.querySelectorAll('.wishlist-check').forEach(cb => {
+        cb.addEventListener('change', function() {
+          const idx = this.getAttribute('data-index');
+          document.querySelectorAll('.wishlist-qty')[idx].disabled = !this.checked;
+        });
+      });
+    }
+
+    function removeFromWishlist(name) {
+      wishlist = wishlist.filter(item => item.name !== name);
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      renderWishlist();
+      document.querySelectorAll('.product-card').forEach(card => {
+        const title = card.querySelector('.product-title').textContent;
+        if (title === name) {
+          card.querySelector('.wishlist-btn').classList.remove('active');
+        }
+      });
+    }
+
+    function filterProducts() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = products.filter(p => p.name.toLowerCase().includes(query));
+      renderProducts(filtered);
+    }
+
+    function submitOrder() {
+      const selected = [];
+      const checkboxes = document.querySelectorAll('.item-check');
+      const qtyInputs = document.querySelectorAll('.qty');
+      for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+          const qty = parseInt(qtyInputs[i].value);
+          if (qty < 1 || isNaN(qty)) {
+            alert("Jumlah barang harus minimal 1");
+            return;
+          }
+          selected.push({ ...products[i], qty });
+        }
+      }
+      if (selected.length === 0) {
+        alert("Pilih minimal 1 barang!");
+        return;
+      }
+      const alamat = document.getElementById('alamat').value.trim();
+      const metode = document.getElementById('payment-method').value;
+      if (!alamat) {
+        alert("Isi alamat pengiriman!");
+        return;
+      }
+      if (!metode) {
+        alert("Pilih metode pembayaran!");
+        return;
+      }
+      addOrder(selected, alamat, metode);
+      showOrders();
+    }
+
+    function submitOrderFromWishlist() {
+      const selected = [];
+      const checkboxes = document.querySelectorAll('.wishlist-check');
+      const qtyInputs = document.querySelectorAll('.wishlist-qty');
+      for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+          const qty = parseInt(qtyInputs[i].value);
+          if (qty < 1 || isNaN(qty)) {
+            alert("Jumlah barang harus minimal 1");
+            return;
+          }
+          selected.push({ ...wishlist[i], qty });
+        }
+      }
+      if (selected.length === 0) {
+        alert("Pilih minimal 1 barang dari wishlist!");
+        return;
+      }
+      const alamat = document.getElementById('alamat').value.trim();
+      const metode = document.getElementById('payment-method').value;
+      if (!alamat) {
+        alert("Isi alamat pengiriman!");
+        return;
+      }
+      if (!metode) {
+        alert("Pilih metode pembayaran!");
+        return;
+      }
+      addOrder(selected, alamat, metode);
+      showOrders();
+    }
+
+    function addOrder(selectedItems, alamat, metode) {
+      const order = {
+        id: Date.now(),
+        items: selectedItems,
+        alamat,
+        metode,
+        tanggal: new Date().toLocaleString()
+      };
+      orders.push(order);
+      localStorage.setItem('orders', JSON.stringify(orders));
+      renderOrders();
+    }
+
+    function renderOrders() {
+      ordersContainer.innerHTML = '';
+      if (orders.length === 0) {
+        ordersContainer.innerHTML = '<p style="text-align:center; color:#757575;">Belum ada transaksi.</p>';
+        return;
+      }
+      orders.forEach(order => {
+        let rows = '';
+        let total = 0;
+        order.items.forEach(item => {
+          const subtotal = item.price * item.qty;
+          total += subtotal;
+          rows += `<tr>
+            <td>${item.name}</td>
+            <td>Rp${item.price.toLocaleString('id-ID')}</td>
+            <td>${item.qty}</td>
+            <td>Rp${subtotal.toLocaleString('id-ID')}</td>
+          </tr>`;
+        });
+        const orderDiv = document.createElement('div');
+        orderDiv.className = 'order-item';
+        orderDiv.innerHTML = `
+          <h3>Pesanan #${order.id} - ${order.tanggal}</h3>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 45%;">Nama Barang</th>
+                <th style="width: 20%;">Harga Satuan</th>
+                <th style="width: 15%;">Jumlah</th>
+                <th style="width: 20%;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          <div class="summary-label">Total Harga: <span class="summary-value">Rp${total.toLocaleString('id-ID')}</span></div>
+          <div class="summary-label">Alamat: <span class="summary-value">${order.alamat}</span></div>
+          <div class="summary-label">Metode Pembayaran: <span class="summary-value">${order.metode === "transfer" ? "Transfer Bank" : order.metode === "cod" ? "COD (Bayar di Tempat)" : "E-Wallet (OVO, GoPay, DANA)"}</span></div>
+        `;
+        ordersContainer.appendChild(orderDiv);
+      });
+    }
+
+    // Navigation handlers
+    function showHome(event) {
+      if(event) event.preventDefault();
+      mainContent.style.display = 'block';
+      orderSummary.classList.remove('active');
+      wishlistSection.style.display = 'none';
+      orderFormSection.style.display = 'block';
+      setActiveNav('home');
+    }
+
+    function showWishlist(event) {
+      if(event) event.preventDefault();
+      mainContent.style.display = 'none';
+      orderSummary.classList.remove('active');
+      wishlistSection.style.display = 'block';
+      orderFormSection.style.display = 'none';
+      renderWishlist();
+      setActiveNav('wishlist');
+    }
+
+    function showOrders(event) {
+      if(event) event.preventDefault();
+      mainContent.style.display = 'none';
+      orderSummary.classList.add('active');
+      wishlistSection.style.display = 'none';
+      orderFormSection.style.display = 'none';
+      renderOrders();
+      setActiveNav('orders');
+    }
+
+    function setActiveNav(active) {
+      navItems.forEach(item => {
+        item.classList.remove('active');
+      });
+      if (active === 'home') navItems[0].classList.add('active');
+      else if (active === 'wishlist') navItems[1].classList.add('active');
+      else if (active === 'orders') navItems[2].classList.add('active');
+    }
+
+    // Event listener tombol Pesan Sekarang di wishlist
+    wishlistOrderBtn.addEventListener('click', submitOrderFromWishlist);
+
+    // Initial render
+    renderProducts();
+    attachCheckboxListeners();
+  </script>
+</body>
+</html>
